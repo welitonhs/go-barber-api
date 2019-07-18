@@ -7,6 +7,13 @@ class ScheduleController {
   async index(req, res) {
     const isProvider = await User.findOne({
       where: { id: req.userId, provider: true },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
+      ],
     });
 
     if (!isProvider) {
