@@ -7,13 +7,6 @@ class ScheduleController {
   async index(req, res) {
     const isProvider = await User.findOne({
       where: { id: req.userId, provider: true },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['name'],
-        },
-      ],
     });
 
     if (!isProvider) {
@@ -26,11 +19,18 @@ class ScheduleController {
     const appointments = await Appointment.findAll({
       where: {
         provider_id: req.userId,
-        canceled_at: null,
+        cancelled_at: null,
         date: {
           [Op.between]: [startOfDay(parseDate), endOfDay(parseDate)],
         },
       },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
+      ],
       order: ['date'],
     });
 
